@@ -20,8 +20,7 @@ from contextlib import AsyncExitStack
 from functools import partial
 from re import split, sub
 
-from dateutil.parser import parse as parse_time
-from feedparser import parse as parse_feed
+from feedparser import parse
 from httpx import AsyncClient
 from loca import Loca
 from markdownify import markdownify as md
@@ -68,7 +67,7 @@ async def post(job, client, link, title, summary):
 async def mirror(nursery, job, client):
     """Perform the given mirror job."""
     feed = await client.get(job['source'])
-    for entry in parse_feed(feed.text)['entries']:
+    for entry in parse(feed.text)['entries']:
         nursery.start_soon(post, job, client, entry['link'],
                            entry['title'], entry['summary'])
 
