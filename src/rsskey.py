@@ -27,6 +27,12 @@ from markdownify import markdownify as md
 from trio import open_nursery, run
 
 
+def truncate(string, length, end='…'):
+    """Return string truncated to length, ending with given character."""
+    if len(string) <= length: return string
+    return string[:length-len(end)] + end
+
+
 async def create(client, **note):
     """Create the given note and return its ID."""
     response = await client.post('notes/create', json=note)
@@ -42,12 +48,13 @@ async def post(job, client, link, title, summary):
                                                      'userId': job['user']})
     if search.json(): return
 
-    note = partial(create, client, i=job['token'], visibility='home', cw=title)
+    note = partial(create, client, i=job['token'], visibility='home',
+                   cw=truncate(title, job.getint('cw')))
     original = f'Original: {link}'
     rest = '\n\n'.join((*map(partial(sub, r'\s+', ' '),
                              split(r'\s*\n{2,}\s*', md(summary).strip())),
                         original))
-    limit = int(job['limit'])
+    limit = job.getint('text')
     parent = None
 
     while len(rest) > limit:

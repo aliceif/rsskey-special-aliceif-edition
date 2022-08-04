@@ -24,8 +24,10 @@ declare the mirroring jobs in `jobs.conf`, for example:
 source = https://stallman.org/rss/rss.xml
 ; URL to destination Misskey instance's API
 dest = https://birb.space/api
-; Character limit of the Misskey instance
-limit = 420
+; Note character limit of the Misskey instance
+text = 420
+; Content warning character limit of the Misskey instance
+cw = 69
 ; Misskey user ID for searching previous notes
 user = 8rt4sahf1j
 ; Access token with permission to compose notes

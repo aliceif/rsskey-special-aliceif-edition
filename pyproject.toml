@@ -4,7 +4,7 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "rsskey"
-version = "0.1.0"
+version = "0.2.0"
 description = "RSS feed mirror on Misskey"
 readme = "README.md"
 requires-python = ">=3.7"
