@@ -21,7 +21,7 @@ from functools import partial
 from re import split, sub
 
 from feedparser import parse
-from httpx import AsyncClient
+from httpx import AsyncClient, Limits
 from loca import Loca
 from markdownify import markdownify as md
 from trio import open_nursery, run
@@ -80,7 +80,8 @@ async def main():
         for section in config:
             if section == 'DEFAULT': continue
             job = config[section]
-            client = AsyncClient(base_url=job['dest'])
+            client = AsyncClient(base_url=job['dest'],
+                                 limits=Limits(max_connections=16))
             await stack.enter_async_context(client)
             nursery.start_soon(mirror, nursery, job, client)
 
