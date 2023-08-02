@@ -49,7 +49,7 @@ async def post(job, client, link, title, summary):
 'i': job['token']})
     if search.json(): return
 
-    note = partial(create, client, i=job['token'], visibility='home',
+    note = partial(create, client, i=job['token'], visibility='followers',
                    cw=truncate(title, job.getint('cw')))
     original = f'Original: {link}'
     rest = '\n\n'.join((*map(partial(sub, r'\s+', ' '),
