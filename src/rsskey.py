@@ -45,7 +45,8 @@ async def post(job, client, link, title, summary):
     In case the link was already posted, the entry shall be skipped.
     """
     search = await client.post('notes/search', json={'query': link,
-                                                     'userId': job['user']})
+                                                     'userId': job['user'],
+'i': job['token']})
     if search.json(): return
 
     note = partial(create, client, i=job['token'], visibility='home',
