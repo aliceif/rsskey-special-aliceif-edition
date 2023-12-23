@@ -20,6 +20,9 @@ from contextlib import AsyncExitStack
 from functools import partial
 from re import split, sub
 
+from datetime import datetime
+from datetime import timedelta
+
 from feedparser import parse
 from httpx import AsyncClient, Limits
 from loca import Loca
@@ -76,8 +79,11 @@ async def mirror(nursery, job, client):
     """Perform the given mirror job."""
     feed = await client.get(job['source'])
     for entry in parse(feed.text)['entries']:
-        nursery.start_soon(post, job, client, entry['link'],
-                           entry['title'], entry['summary'])
+        entry_published = entry.published_parsed
+        entry_datetime = datetime(*(entry_published[0:6]))
+        if (datetime.now() - entry_datetime) <= timedelta(weeks=2):
+            nursery.start_soon(post, job, client, entry['link'],
+	                       entry['title'], entry['summary'])
 
 
 async def main():
