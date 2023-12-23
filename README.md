@@ -1,3 +1,11 @@
+# rsskey special aliceif edition
+
+# changes from mainline rsskey
+- venv gitignored
+- fix missing token pass
+- make visible followers-only (hardcoded, sorry)
+- only fetch posts from the last two weeks (otherwise adding a new feed will spam you!)
+
 # rsskey
 
 rsskey is a simple script for mirroring [RSS] or [Atom] feeds on [Misskey].
@@ -7,11 +15,7 @@ character limit and checks for previous notes before creating.
 ## Installation
 
 rsskey depends on [feedparser], [httpx], [loca], [markdownify] and [trio].
-If you `pip install rsskey`, pip will install all the dependencies for you
-to run `python -m rsskey`.
-
-Alternatively, you can get the requirements from your distribution,
-fetch the source tree and execute `src/rsskey.py`.
+Install the dependencies, then execute `src/rsskey.py`.
 
 ## Usage
 
@@ -34,15 +38,11 @@ user = 8rt4sahf1j
 token = 7h4753cur3r4nd0m57r1n61764v3y0u
 ```
 
-In order to run rsskey chronically, set up a cron job or something IDK.
+In order to run rsskey chronically, set up a systemd timer or something.
 
 ## Contributing
 
-Patches should be sent to [~cnx/misc@lists.sr.ht]
-using [git send-email] with the following configurations:
-
-    git config sendemail.to '~cnx/misc@lists.sr.ht'
-    git config format.subjectPrefix 'PATCH rsskey'
+This is a private fork for my own usage of the original project at [original-repo-url]. I have no desire to maintain this for anyone else, but I am curious about any ways this project may get extended.
 
 ## Copying
 
@@ -64,3 +64,4 @@ or (at your option) any later version.
 [~cnx/misc@lists.sr.ht]: https://lists.sr.ht/~cnx/misc
 [git send-email]: https://git-send-email.io
 [agplv3]: https://www.gnu.org/licenses/agpl-3.0.html
+[original-repo-url]: https://sr.ht/~cnx/rsskey/
