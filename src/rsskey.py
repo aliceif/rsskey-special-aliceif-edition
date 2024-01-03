@@ -47,12 +47,13 @@ async def post(job, client, link, title, summary):
 
     In case the link was already posted, the entry shall be skipped.
     """
+    visibility = job.get('visibility', 'home')
     search = await client.post('notes/search', json={'query': link,
                                                      'userId': job['user'],
-'i': job['token']})
+                                                     'i': job['token']})
     if search.json(): return
 
-    note = partial(create, client, i=job['token'], visibility='followers',
+    note = partial(create, client, i=job['token'], visibility=visibility,
                    cw=truncate(title, job.getint('cw')))
     original = f'Original: {link}'
     rest = '\n\n'.join((*map(partial(sub, r'\s+', ' '),
@@ -77,11 +78,12 @@ async def post(job, client, link, title, summary):
 
 async def mirror(nursery, job, client):
     """Perform the given mirror job."""
+    lookback = job.getint('lookback', 1)
     feed = await client.get(job['source'])
     for entry in parse(feed.text)['entries']:
         entry_published = entry.published_parsed
         entry_datetime = datetime(*(entry_published[0:6]))
-        if (datetime.now() - entry_datetime) <= timedelta(weeks=2):
+        if (datetime.now() - entry_datetime) <= timedelta(days=lookback):
             nursery.start_soon(post, job, client, entry['link'],
 	                       entry['title'], entry['summary'])
 

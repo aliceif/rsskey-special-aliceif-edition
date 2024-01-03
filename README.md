@@ -3,8 +3,8 @@
 # changes from mainline rsskey
 - venv gitignored
 - fix missing token pass
-- make visible followers-only (hardcoded, sorry)
-- only fetch posts from the last two weeks (otherwise adding a new feed will spam you!)
+- configuration for visibility
+- configuration for how far to go back when fetching new posts (if unlimited (as was originally) adding a new feed will spam you!)
 
 # rsskey
 
@@ -24,14 +24,20 @@ declare the mirroring jobs in `jobs.conf`, for example:
 
 ```ini
 [rms@birb.space]
+; Numbers of days to look back when querying for new posts - default is 1 day.
+lookback = 14
 ; URL to RSS/Atom feed source
 source = https://stallman.org/rss/rss.xml
 ; URL to destination Misskey instance's API
 dest = https://birb.space/api
-; Note character limit of the Misskey instance
+; Note character limit of the Misskey instance - usually 3000 but you may want to keep it low for various reasons.
 text = 420
 ; Content warning character limit of the Misskey instance
 cw = 69
+; Visibility
+; - home (everyone who visits the profile but only sent to followers)
+; - followers (only followers will see)
+visibility = home
 ; Misskey user ID for searching previous notes
 user = 8rt4sahf1j
 ; Access token with permission to compose notes
