@@ -38,6 +38,8 @@ def truncate(string, length, end='…'):
 
 async def create(client, **note):
     """Create the given note and return its ID."""
+    if len(note['cw']) == 0:
+        del note['cw']
     response = await client.post('notes/create', json=note)
     return response.json()['createdNote']['id']
 
@@ -81,11 +83,30 @@ async def mirror(nursery, job, client):
     lookback = job.getint('lookback', 1)
     feed = await client.get(job['source'])
     for entry in parse(feed.text)['entries']:
-        entry_published = entry.published_parsed
+        entry_published = entry.published_parsed if 'published_parse' in entry else entry.updated_parsed
         entry_datetime = datetime(*(entry_published[0:6]))
         if (datetime.now() - entry_datetime) <= timedelta(days=lookback):
+            format = job.get('format')
+            cw = 'no title'
+            body = 'no body'
+            if format == 'blog':
+                cw = entry['title']
+                body = entry['summary']
+            elif format == 'misskey':
+                if 'summary_detail' in entry:
+                    cw = entry['summary']
+                else:
+                    cw = 'no description'
+                body = entry['content']
+            elif format == 'mastodon':
+                cw = ''
+                body = entry['summary']
+            else:
+                if 'title' in entry:
+                    cw = entry['title']
+                body = entry['summary']
             nursery.start_soon(post, job, client, entry['link'],
-	                       entry['title'], entry['summary'])
+                               cw, body)
 
 
 async def main():

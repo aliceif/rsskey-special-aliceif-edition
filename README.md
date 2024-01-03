@@ -5,6 +5,7 @@
 - fix missing token pass
 - configuration for visibility
 - configuration for how far to go back when fetching new posts (if unlimited (as was originally) adding a new feed will spam you!)
+- handling of misskey and mastodon rss feed formats (e.g. you want to take a user on misskey or a hashtag on mastodon and republish their posts)
 
 # rsskey
 
@@ -24,6 +25,11 @@ declare the mirroring jobs in `jobs.conf`, for example:
 
 ```ini
 [rms@birb.space]
+; Format of the rss feed
+; - blog: ordinary blogs - should usually work.
+; - misskey: misskey profile feed - has special parsing to preserve the CW field.
+; - mastodon: mastodon rss feed - has special parsing for format idiosyncrasies.
+format = blog
 ; Numbers of days to look back when querying for new posts - default is 1 day.
 lookback = 14
 ; URL to RSS/Atom feed source
