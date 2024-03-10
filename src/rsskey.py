@@ -83,7 +83,7 @@ async def mirror(nursery, job, client):
     lookback = job.getint('lookback', 1)
     feed = await client.get(job['source'])
     for entry in parse(feed.text)['entries']:
-        entry_published = entry.published_parsed if 'published_parse' in entry else entry.updated_parsed
+        entry_published = entry.published_parsed if 'published_parsed' in entry else entry.updated_parsed
         entry_datetime = datetime(*(entry_published[0:6]))
         if (datetime.now() - entry_datetime) <= timedelta(days=lookback):
             format = job.get('format')
