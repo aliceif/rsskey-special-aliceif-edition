@@ -91,7 +91,10 @@ async def mirror(nursery, job, client):
             body = 'no body'
             if format == 'blog':
                 cw = entry['title']
-                body = entry['summary']
+                if 'summary' in entry:
+                    body = entry['summary']
+                else:
+                    body = entry['description']
             elif format == 'misskey':
                 if 'summary_detail' in entry:
                     cw = entry['summary']
