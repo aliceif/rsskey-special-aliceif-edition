@@ -24,7 +24,7 @@ from datetime import datetime
 from datetime import timedelta
 
 from feedparser import parse
-from httpx import AsyncClient, Limits
+from httpx import AsyncClient, Limits, HTTPError
 from loca import Loca
 from markdownify import markdownify as md
 from trio import open_nursery, run
@@ -81,7 +81,10 @@ async def post(job, client, link, title, summary):
 async def mirror(nursery, job, client):
     """Perform the given mirror job."""
     lookback = job.getint('lookback', 1)
-    feed = await client.get(job['source'])
+    try:
+        feed = await client.get(job['source'])
+    except HTTPError as exc:
+        raise RuntimeError(f"Error when getting {job['source']}!") from exc
     for entry in parse(feed.text)['entries']:
         entry_published = entry.published_parsed if 'published_parsed' in entry else entry.updated_parsed
         entry_datetime = datetime(*(entry_published[0:6]))
