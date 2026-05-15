@@ -86,22 +86,22 @@ async def mirror(nursery, job, client):
         entry_published = entry.published_parsed if 'published_parsed' in entry else entry.updated_parsed
         entry_datetime = datetime(*(entry_published[0:6]))
         if (datetime.now() - entry_datetime) <= timedelta(days=lookback):
-            format = job.get('format')
+            feed_format = job.get('format')
             cw = 'no title'
             body = 'no body'
-            if format == 'blog':
+            if feed_format == 'blog':
                 cw = entry['title']
                 if 'summary' in entry:
                     body = entry['summary']
                 else:
                     body = entry['description']
-            elif format == 'misskey':
+            elif feed_format == 'misskey':
                 if 'summary_detail' in entry:
                     cw = entry['summary']
                 else:
                     cw = 'no description'
                 body = entry['content']
-            elif format == 'mastodon':
+            elif feed_format == 'mastodon':
                 cw = ''
                 body = entry['summary']
             else:
